@@ -37,15 +37,42 @@ const ExchangeControls = () => {
   const [currName, setCurrName] = useState('');
   const [inputCryptoValue, setInputCryptoValue] = useState('');
   const [inputCurrValue, setInputCurrValue] = useState('');
-  const [cryptoRate, setCryptoRate] = useState('');
-  const [currRate, setCurrRate] = useState('');
+  const [cryptoRate, setCryptoRate] = useState({});
 
   useEffect(() => {
+    fetchRate();
     const socket = openSocket("http://localhost:8080");
     socket.on("ratedatasaved", (data) => {
-      console.log(data);
+      const objectRate = data.rateData.reduce((object, el) => {
+        if(el.cryptoCurrencyRate) {
+          object[el.cryptoCurrencyName] = el.cryptoCurrencyRate;
+        }
+        return object;
+      }, {})
+      setCryptoRate(objectRate);
     });
   }, []);
+
+  const fetchRate = (currency = 'USD') => {
+    const apiKey = "8d780be631msh8a6ccd188f9f4f4p196937jsnb18e3eb2d7d6";
+    const host = "currencyapi-net.p.rapidapi.com";
+    const url = "https://currencyapi-net.p.rapidapi.com/rates";
+
+    fetch(url, {
+      method: "GET",
+      url: url,
+      params: { output: "JSON", base: currency },
+      headers: {
+        "X-RapidAPI-Host": host,
+        "X-RapidAPI-Key": apiKey,
+      },
+    }).then((res) => {
+      return res.json();
+    })
+    .then((res) => {
+      setCryptoRate({'BTC': res.rates['BTC'], 'ETH': res.rates['ETH']})
+    })
+  }
 
   const checkChangedInput = (inputType) => {
     if(disableInputType === inputType) {
@@ -65,7 +92,8 @@ const ExchangeControls = () => {
     const isInputDisabled = checkChangedInput('curr');
 
     if(!isInputDisabled) {
-      let currentCurrencyRate = inputCurrValue * 0.0003;
+      console.log(cryptoRate, cryptoName)
+      let currentCurrencyRate = inputCurrValue * cryptoRate[event.target.value];
       setInputCryptoValue(currentCurrencyRate);
     }
   }
@@ -75,7 +103,7 @@ const ExchangeControls = () => {
     const isInputDisabled = checkChangedInput('crypto');
 
     if(!isInputDisabled) {
-      let currentCryptoRate = inputCryptoValue / 0.0003;
+      let currentCryptoRate = inputCryptoValue / cryptoRate[cryptoName];
       setInputCurrValue(Math.floor(currentCryptoRate));
     }
   }
