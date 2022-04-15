@@ -1,0 +1,23 @@
+.exchange-controls-container {
+  display: flex;
+  justify-content: center;
+}
+
+.exchange-controls-section {
+  width: 65%;
+}
+
+.exchange-controls-container h2 {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.currency-controls-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.currency-controls-container .equal-sign-divider {
+  padding: 10px 0;
+}

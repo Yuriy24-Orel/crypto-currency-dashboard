@@ -1,0 +1,19 @@
+.custom-select {
+  width: 15em;
+}
+
+.custom-select option {
+  font-size: 17px;
+  color: #565656;
+}
+
+
+.option-wrapper {
+  display: flex;
+  align-items: center;
+}
+.option-wrapper img {
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+}

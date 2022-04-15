@@ -1,0 +1,13 @@
+.exchange-control-container {
+  display: flex;
+  align-items: center;
+  width: 40%;
+}
+
+.exchange-control-container .select-container label,
+.exchange-control-container .input-container label {
+  display: inline-block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #afafaf;
+}

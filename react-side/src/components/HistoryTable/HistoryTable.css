@@ -1,0 +1,13 @@
+.history-table-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.MuiTableCell-root.history-table__date-time-cell {
+  font-weight: bold;
+}
+
+.MuiTableCell-root.history-table__date-time-cell .date-time-wrapper {
+  border-right: 2px solid rgb(211, 210, 210);
+}
