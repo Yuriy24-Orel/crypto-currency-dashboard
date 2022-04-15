@@ -3,18 +3,13 @@ import openSocket from "socket.io-client";
 
 import ExchangeControl from "./ExchangeControl/ExchangeControl";
 import CustomButton from "../UI/Button/CutsomButton";
+import ApiRequest from "../../utils/api";
 
-import bitcoin from './img/bitcoin.png';
-import ethereum from './img/ethereum.png';
-import usa from './img/usa.png';
+import { AVAILABLE_CRYPTO_CURRENCY, AVAILABLE_CURRENCY } from "../../constants/constants";
 
 import "./ExchangeControls.css";
 
-const AVAILABLE_CRYPTO_CURRENCY = [{name: "BTC", imgUrl: bitcoin}, {name: "ETH", imgUrl: ethereum}];
-const AVAILABLE_CURRENCY = [{name: "USD", imgUrl: usa }];
-
 const ExchangeControls = () => {
-  const [data, setData] = useState([]);
   const [disableInputType, setDisableInputType] = useState('');
   const [cryptoName, setCryptoName] = useState('');
   const [currName, setCurrName] = useState('');
@@ -23,7 +18,7 @@ const ExchangeControls = () => {
   const [cryptoRate, setCryptoRate] = useState({});
 
   useEffect(() => {
-    fetchRate();
+    ApiRequest.fetchRate();
     const socket = openSocket("http://localhost:8080");
     socket.on("ratedatasaved", (data) => {
       const objectRate = data.rateData.reduce((object, el) => {
@@ -36,38 +31,11 @@ const ExchangeControls = () => {
     });
   }, []);
 
-  const fetchRate = (currency = 'USD') => {
-    const apiKey = "8d780be631msh8a6ccd188f9f4f4p196937jsnb18e3eb2d7d6";
-    const host = "currencyapi-net.p.rapidapi.com";
-    const url = "https://currencyapi-net.p.rapidapi.com/rates";
-
-    fetch(url, {
-      method: "GET",
-      url: url,
-      params: { output: "JSON", base: currency },
-      headers: {
-        "X-RapidAPI-Host": host,
-        "X-RapidAPI-Key": apiKey,
-      },
-    }).then((res) => {
-      return res.json();
-    })
-    .then((res) => {
-      setCryptoRate({'BTC': res.rates['BTC'], 'ETH': res.rates['ETH']})
-    })
-  }
-
-  const checkChangedInput = (inputType) => {
-    if(disableInputType === inputType) {
-      return true;
-    }
-
+  const checkChangedInput = (inputType) => { 
     if(!disableInputType) {
       setDisableInputType(inputType);
-      return true;
     }
-
-    return false;
+    return disableInputType === inputType;
   }
 
   const onChangeCryptoSelectHandler = (event) => {
@@ -114,18 +82,7 @@ const ExchangeControls = () => {
       amount2: inputCurrValue,
       type: 'Exchanged'
     }
-    fetch('http://localhost:8080/currency', {
-      method: 'POST',
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      redirect: 'follow',
-      referrerPolicy: 'no-referrer',
-      body: JSON.stringify(data)
-    })
+    ApiRequest.saveControlsData(data);
   }
 
   return (
@@ -141,7 +98,7 @@ const ExchangeControls = () => {
             inputValue={inputCryptoValue}
             selectLabel="Currency From"
             inputLabel="Amount 1"
-            inputDisabled={disableInputType && disableInputType === 'crypto' ? true : false}
+            inputDisabled={disableInputType && disableInputType === 'crypto'}
           />
           <span className="equal-sign-divider">=</span>
           <ExchangeControl
@@ -152,7 +109,7 @@ const ExchangeControls = () => {
             inputValue={inputCurrValue}
             selectLabel="Currency to"
             inputLabel="Amount 2"
-            inputDisabled={disableInputType && disableInputType === 'curr' ? true : false}
+            inputDisabled={disableInputType && disableInputType === 'curr'}
           />
           <CustomButton text="Save" onClickHandler={onClickHandler} />
         </div>

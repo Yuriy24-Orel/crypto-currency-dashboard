@@ -17,7 +17,7 @@ const getDb = () => {
   if(_db) {
     return _db;
   }
-  throw 'No database found!';
+  throw 'No database found or url for database is incorrect!';
 }
 
 module.exports.mongoConnect = mongoConnect;
