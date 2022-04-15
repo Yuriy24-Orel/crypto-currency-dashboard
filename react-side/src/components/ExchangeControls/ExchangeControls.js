@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import openSocket from "socket.io-client";
 
 import ExchangeControl from "./ExchangeControl/ExchangeControl";
@@ -9,16 +9,30 @@ import { AVAILABLE_CRYPTO_CURRENCY, AVAILABLE_CURRENCY } from "../../constants/c
 
 import "./ExchangeControls.css";
 
+const initialState = {inputType: '', inputValue: '', inputObject: {crypto: '', curr: ''}};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'UPDATING_INPUT':
+      return {...state, inputType: action.payload.inputType, inputObject: {[action.payload.inputType]: action.payload.inputValue}};
+    case 'UPDATING_INPUT_VALUE':
+      return {...state, inputObject: {[action.payload.inputType]: action.payload.inputValue}};
+    default:
+      throw new Error();
+  }
+}
+
 const ExchangeControls = () => {
-  const [disableInputType, setDisableInputType] = useState('');
   const [cryptoName, setCryptoName] = useState('');
   const [currName, setCurrName] = useState('');
   const [inputCryptoValue, setInputCryptoValue] = useState('');
   const [inputCurrValue, setInputCurrValue] = useState('');
   const [cryptoRate, setCryptoRate] = useState({});
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    ApiRequest.fetchRate();
+    const dataPromise = ApiRequest.fetchRate();
+    dataPromise.then(res => res.json()).then((res) => setCryptoRate({'BTC': res.rates['BTC'], 'ETH': res.rates['ETH']}))
     const socket = openSocket("http://localhost:8080");
     socket.on("ratedatasaved", (data) => {
       const objectRate = data.rateData.reduce((object, el) => {
@@ -31,48 +45,27 @@ const ExchangeControls = () => {
     });
   }, []);
 
-  const checkChangedInput = (inputType) => { 
-    if(!disableInputType) {
-      setDisableInputType(inputType);
-    }
-    return disableInputType === inputType;
-  }
-
   const onChangeCryptoSelectHandler = (event) => {
     setCryptoName(event.target.value);
-    const isInputDisabled = checkChangedInput('curr');
 
-    if(!isInputDisabled) {
-      let currentCurrencyRate = inputCurrValue * cryptoRate[event.target.value];
-      setInputCryptoValue(currentCurrencyRate);
+    if(state.inputType !== 'crypto') {
+      let currentCurrencyRate = state.inputObject['curr'] * cryptoRate[event.target.value];
+      dispatch({type: 'UPDATING_INPUT_VALUE', payload: {inputType: 'crypto', inputValue: currentCurrencyRate}});
     }
   }
 
   const onChangeCurrSelectHandler = (event) => {
     setCurrName(event.target.value);
-    const isInputDisabled = checkChangedInput('crypto');
 
-    if(!isInputDisabled) {
-      let currentCryptoRate = inputCryptoValue / cryptoRate[cryptoName];
-      setInputCurrValue(Math.floor(currentCryptoRate));
+    if(state.inputType !== 'curr') {
+      let currentCryptoRate = state.inputObject['crypto'] / cryptoRate[cryptoName];
+      dispatch({type: 'UPDATING_INPUT_VALUE', payload: {inputType: 'curr', inputValue: currentCryptoRate}});
     }
   }
 
-  const onChangeCryptoInputHandler = (event) => {
-    checkChangedInput('curr');
-
-    if(cryptoName) {
-      setInputCryptoValue(event.target.value);
-    }
-  }
-
-  const onChangeCurrInputHandler = (event) => {
-    checkChangedInput('crypto');
-
-    if(currName) {
-      setInputCurrValue(event.target.value);
-    }
-  }
+  const onChangeInputHandler = (inputType) => (event) => {
+      dispatch({type: 'UPDATING_INPUT', payload: {inputType, inputValue: event.target.value}});
+  };
 
   const onClickHandler = () => {
     const data = {
@@ -94,22 +87,22 @@ const ExchangeControls = () => {
             items={AVAILABLE_CRYPTO_CURRENCY}
             selectValue={cryptoName}
             onChangeHandler={onChangeCryptoSelectHandler}
-            onInputChangeHandler={onChangeCryptoInputHandler}
-            inputValue={inputCryptoValue}
+            onInputChangeHandler={onChangeInputHandler('crypto')}
+            inputValue={state.inputObject['crypto']}
             selectLabel="Currency From"
             inputLabel="Amount 1"
-            inputDisabled={disableInputType && disableInputType === 'crypto'}
+            inputDisabled={state.inputType && state.inputType !== 'crypto'}
           />
           <span className="equal-sign-divider">=</span>
           <ExchangeControl
             items={AVAILABLE_CURRENCY}
             selectValue={currName}
             onChangeHandler={onChangeCurrSelectHandler}
-            onInputChangeHandler={onChangeCurrInputHandler}
-            inputValue={inputCurrValue}
+            onInputChangeHandler={onChangeInputHandler('curr')}
+            inputValue={state.inputObject['curr']}
             selectLabel="Currency to"
             inputLabel="Amount 2"
-            inputDisabled={disableInputType && disableInputType === 'curr'}
+            inputDisabled={state.inputType && state.inputType !== 'curr'}
           />
           <CustomButton text="Save" onClickHandler={onClickHandler} />
         </div>
