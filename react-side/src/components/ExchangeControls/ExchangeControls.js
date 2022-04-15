@@ -13,23 +13,6 @@ import "./ExchangeControls.css";
 const AVAILABLE_CRYPTO_CURRENCY = [{name: "BTC", imgUrl: bitcoin}, {name: "ETH", imgUrl: ethereum}];
 const AVAILABLE_CURRENCY = [{name: "USD", imgUrl: usa }];
 
-const styleButtonObject = {
-  width: "7em",
-  padding: "10px 16px"
-};
-
-const styleSelectObject = {
-  "& .MuiSelect-select": {
-    padding: "10px",
-  },
-};
-
-const styleInputObject = {
-  "& .MuiOutlinedInput-root": {
-    padding: "10px 14px",
-  },
-};
-
 const ExchangeControls = () => {
   const [data, setData] = useState([]);
   const [disableInputType, setDisableInputType] = useState('');
@@ -92,7 +75,6 @@ const ExchangeControls = () => {
     const isInputDisabled = checkChangedInput('curr');
 
     if(!isInputDisabled) {
-      console.log(cryptoRate, cryptoName)
       let currentCurrencyRate = inputCurrValue * cryptoRate[event.target.value];
       setInputCryptoValue(currentCurrencyRate);
     }
@@ -153,8 +135,6 @@ const ExchangeControls = () => {
         <div className="currency-controls-container">
           <ExchangeControl
             items={AVAILABLE_CRYPTO_CURRENCY}
-            styleSelectObject={styleSelectObject}
-            styleInputObject={styleInputObject}
             selectValue={cryptoName}
             onChangeHandler={onChangeCryptoSelectHandler}
             onInputChangeHandler={onChangeCryptoInputHandler}
@@ -166,8 +146,6 @@ const ExchangeControls = () => {
           <span className="equal-sign-divider">=</span>
           <ExchangeControl
             items={AVAILABLE_CURRENCY}
-            styleSelectObject={styleSelectObject}
-            styleInputObject={styleInputObject}
             selectValue={currName}
             onChangeHandler={onChangeCurrSelectHandler}
             onInputChangeHandler={onChangeCurrInputHandler}
@@ -176,7 +154,7 @@ const ExchangeControls = () => {
             inputLabel="Amount 2"
             inputDisabled={disableInputType && disableInputType === 'curr' ? true : false}
           />
-          <CustomButton text="Save" styleObject={styleButtonObject} onClickHandler={onClickHandler} />
+          <CustomButton text="Save" onClickHandler={onClickHandler} />
         </div>
       </div>
     </div>

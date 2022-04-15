@@ -4,6 +4,27 @@
   align-items: center;
 }
 
+.history-table-wrapper .MuiPaper-root {
+  width: 65%;
+  margin-top: 50px;
+}
+
+.MuiTableHead-root .MuiTableCell-head {
+  background-color: #eee;
+  color: black;
+  padding: 5px 15px;
+  text-align: left;
+}
+.MuiTableHead-root .MuiTableCell-body {
+  background-color: #eee;
+  color: black;
+  padding: 5px 15px;
+  text-align: left;
+}
+.MuiTableBody-root .MuiTableRow-root:nth-of-type(even) {
+  background-color: #eee;
+}
+
 .MuiTableCell-root.history-table__date-time-cell {
   font-weight: bold;
 }

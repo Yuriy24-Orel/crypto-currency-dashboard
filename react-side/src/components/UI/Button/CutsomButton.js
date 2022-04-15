@@ -7,7 +7,6 @@ const CustomButton = (props) => {
       variant="contained"
       color="success"
       onClick={props.onClickHandler}
-      sx={props.styleObject ? { ...props.styleObject } : {}}
     >
       {props.text}
     </Button>

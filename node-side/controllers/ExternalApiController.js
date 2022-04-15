@@ -1,6 +1,7 @@
 const RapidApiHelper = require("../helpers/RapidApiHelper");
 const CurrencyModel = require("../models/CurrencyRateModel");
 const io = require('../socket').getIO();
+const moment = require('moment');
 
 class ExternalApiController {
   #apiInstances = [];
@@ -14,34 +15,21 @@ class ExternalApiController {
       setInterval(() => {
         const dataPromise = el.getRates();
         dataPromise.then((res) => {
-          let currentdate = new Date();
-          let datetime = 
-            currentdate.getDate() +
-            "/" +
-            (currentdate.getMonth() + 1) +
-            "/" +
-            currentdate.getFullYear() +
-            " " +
-            currentdate.getHours() +
-            ":" +
-            currentdate.getMinutes() +
-            ":" +
-            currentdate.getSeconds();
-
-            for(let rate in res.data.rates) {
-              if(rate == 'BTC' || rate == 'ETH') {
-                const currencyModelInstance = new CurrencyModel(
-                  datetime.toString(),
-                  res.data.base,
-                  rate,
-                  res.data.rates[rate],
-                  'Live Price'
-                );
-                currencyModelInstance.saveRate();
-              }
+          let datetime = moment().format('DD/MM/YYYY k:mm');
+          for(let rate in res.data.rates) {
+            if(rate == 'BTC' || rate == 'ETH') {
+              const currencyModelInstance = new CurrencyModel(
+                datetime,
+                res.data.base,
+                rate,
+                res.data.rates[rate],
+                'Live Price'
+              );
+              currencyModelInstance.saveRate();
             }
+          }
 
-            this.sendDataToClientSide();
+          this.sendDataToClientSide();
         })
       }, timeOut)
     });

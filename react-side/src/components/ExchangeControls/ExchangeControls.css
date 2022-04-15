@@ -21,3 +21,16 @@
 .currency-controls-container .equal-sign-divider {
   padding: 10px 0;
 }
+
+.currency-controls-container .MuiSelect-select {
+  padding: 10px;
+}
+
+.currency-controls-container .MuiButton-root {
+  width: 7em;
+  padding: 10px 16px;
+}
+
+.currency-controls-container .input-container .MuiOutlinedInput-root {
+  padding: 10px 14px;
+}

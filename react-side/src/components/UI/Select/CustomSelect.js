@@ -6,24 +6,6 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 import "./CustomSelect.css";
 
-const menuItemStyle = {
-  "&": {
-    backgroundColor: "#fff",
-  },
-  "& .option-wrapper": {
-    display: 'flex',
-    alignItems: "center"
-  },
-  "& .option-wrapper img": {
-    width: '25px',
-    height: "25px",
-    marginRight: '10px'
-  },
-  "&:hover": {
-    backgroundColor: "#eeeeee",
-  },
-};
-
 const CustomSelect = (props) => {
   return (
     <FormControl fullWidth>
@@ -33,15 +15,13 @@ const CustomSelect = (props) => {
         className="custom-select"
         value={props.selectValue}
         onChange={props.onChangeHandler}
-        sx={{ ...props.styleSelectObject }}
       >
-        <MenuItem sx={{ ...menuItemStyle }} disabled value="">
+        <MenuItem disabled value="">
           Select
         </MenuItem>
         {props.items.map((el, idx) => {
           return (
             <MenuItem
-              sx={{ ...menuItemStyle }}
               key={`${el.name}-${idx}`}
               value={el.name}
             >

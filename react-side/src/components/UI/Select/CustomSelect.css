@@ -7,6 +7,23 @@
   color: #565656;
 }
 
+.MuiMenuItem-root
+
+.MuiMenuItem {
+  background-color: #fff;
+}
+.MuiMenuItem-root .option-wrapper {
+  display: flex;
+  align-items: center;
+}
+.MuiMenuItem-root .option-wrapper img {
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+}
+.MuiMenuItem-root:hover {
+  background-color: #eeeeee;
+}
 
 .option-wrapper {
   display: flex;

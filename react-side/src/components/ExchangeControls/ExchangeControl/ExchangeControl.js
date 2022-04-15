@@ -13,14 +13,12 @@ const ExchangeControl = (props) => {
         <CustomSelect
           items={props.items}
           selectValue={props.selectValue}
-          styleSelectObject={props.styleSelectObject}
           onChangeHandler={props.onChangeHandler}
         />
       </div>
       <div className="input-container">
         <label>{props.inputLabel}</label>
         <InputNumber
-          styleInputObject={props.styleInputObject}
           onChangeHandler={props.onInputChangeHandler}
           inputDisabled={props.inputDisabled}
           inputValue={props.inputValue}

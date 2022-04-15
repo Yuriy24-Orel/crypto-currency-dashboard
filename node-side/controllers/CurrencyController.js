@@ -1,3 +1,4 @@
+const moment = require('moment');
 const CurrencyModel = require('../models/CurrencyRateModel');
 const io = require('../socket');
 
@@ -10,18 +11,7 @@ class CurrencyController {
 
   saveCurrency(req, res) {
     let currentdate = new Date();
-    let datetime = 
-      currentdate.getDate() +
-      "/" +
-      (currentdate.getMonth() + 1) +
-      "/" +
-      currentdate.getFullYear() +
-      " " +
-      currentdate.getHours() +
-      ":" +
-      currentdate.getMinutes() +
-      ":" +
-      currentdate.getSeconds();
+    let datetime = moment().format('DD/MM/YYYY k:mm');
     const currencyModelInstance = new CurrencyModel(datetime, req.body.currencyTo, req.body.currencyFrom, '', 'Exchanged', req.body.amount1, req.body.amount2);
     currencyModelInstance.saveRateWithRequest();
     this.sendDataToClientSide();
