@@ -11,3 +11,6 @@ Here is instructions:
 3) After first and second steps, you need to connect node-side to database. In file database.js, you should change db server. By default, it has this link: "mongodb://localhost:27017", but if you changed port, or server link, you also should change it in database file.
 
 4) In both folders run "npm start" script
+
+https://user-images.githubusercontent.com/54271075/164003732-906d8f18-01f6-49de-930e-ba827231c0aa.mp4
+
